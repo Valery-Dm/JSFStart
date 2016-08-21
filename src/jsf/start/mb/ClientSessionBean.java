@@ -5,7 +5,9 @@ import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 
 import jsf.start.model.ClientLookupService;
 import jsf.start.model.data.Languages;
@@ -13,31 +15,31 @@ import jsf.start.model.data.Plans;
 import jsf.start.model.impl.Client;
 import jsf.start.model.impl.Plan;
 
-@ManagedBean(name="client")
+@ManagedBean(name = "client")
 @SessionScoped
 public class ClientSessionBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /* Redirect strings */
-    private static final String INDEX_PAGE   = "index";
+    private static final String INDEX_PAGE    = "index";
     private static final String REGISTER_PAGE = "register";
-    private static final String HOME_PAGE = "home?faces-redirect=true";
-    
+    private static final String HOME_PAGE     = "home?faces-redirect=true";
+
     /* Client's data */
-    private String id;
+    private String           id;
     transient private String password;
-    private String deposit;
+    private String           deposit;
     transient private String errorMessage;
-    private String firstname;
-    private String lastname;
-    private String plan = Plans.PLAN500.getPlanName(); 
+    private String           firstname;
+    private String           lastname;
+    private String           plan = Plans.PLAN500.getPlanName();
     /* HashMap instead of database of clients */
     @ManagedProperty("#{virtualDataBase}")
     transient private ClientLookupService service;
     /* Localized resources */
     @ManagedProperty("#{languages}")
     transient private Languages msg;
-    
+
     public String getId() {
         return id;
     }
@@ -45,7 +47,7 @@ public class ClientSessionBean implements Serializable {
     public String getPassword() {
         return password;
     }
-    
+
     public void setId(String id) {
         errorMessage = null;
         // immediate ajax validation
@@ -57,23 +59,23 @@ public class ClientSessionBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-   
+
     public String getFirstname() {
         return firstname;
     }
-    
+
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
-    
+
     public String getLastname() {
         return lastname;
     }
-    
+
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-    
+
     public String getPlan() {
         return plan;
     }
@@ -94,9 +96,9 @@ public class ClientSessionBean implements Serializable {
         return errorMessage;
     }
 
-//    public void setErrorMessage(String errMessage) {
-//        this.errorMessage = errMessage;
-//    }
+    // public void setErrorMessage(String errMessage) {
+    // this.errorMessage = errMessage;
+    // }
 
     public ClientLookupService getService() {
         return service;
@@ -105,7 +107,7 @@ public class ClientSessionBean implements Serializable {
     public void setService(ClientLookupService service) {
         this.service = service;
     }
-    
+
     public Languages getMsg() {
         return msg;
     }
@@ -119,11 +121,11 @@ public class ClientSessionBean implements Serializable {
     }
 
     public String login() {
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        // try {
+        // Thread.sleep(2000);
+        // } catch (InterruptedException e) {
+        // e.printStackTrace();
+        // }
         errorMessage = null;
         if (id != null && password != null) {
             Client client = service.findClientById(id);
@@ -135,15 +137,9 @@ public class ClientSessionBean implements Serializable {
                 return HOME_PAGE;
             } else errorMessage = getMsg().getMessage("cantLogin");
         } else errorMessage = getMsg().getMessage("emptyInput");
-        
-        if (errorMessage == null)
-            return INDEX_PAGE;
-        else {
-            FacesMessage message = new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, errorMessage, null);
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return null;
-        }
+
+        FacesContext.getCurrentInstance().addMessage(null, setErrorMessage(errorMessage));
+        return INDEX_PAGE;
     }
 
     public String register() {
@@ -158,15 +154,31 @@ public class ClientSessionBean implements Serializable {
                 return HOME_PAGE;
             } else errorMessage = getMsg().getMessage("idExist");
         } else errorMessage = getMsg().getMessage("emptyInput");
+        
+        FacesContext.getCurrentInstance().addMessage(null, setErrorMessage(errorMessage));
+        return REGISTER_PAGE;
+    }
 
-        if (errorMessage == null)
-            return REGISTER_PAGE;
-        else {
-            FacesMessage message = new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, errorMessage, null);
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return null;
+    public void validatePassword(FacesContext context, 
+                                 UIComponent component, 
+                                 Object value) throws ValidatorException {
+        errorMessage = null;
+        if (!(value instanceof String) || !isPasswordValid((String) value)) {
+            errorMessage = getMsg().getMessage("invalidPassword");
+            throw new ValidatorException(setErrorMessage(errorMessage));
         }
     }
 
+    private boolean isPasswordValid(String value) {
+        //Password should be at least 6 characters long and should contain at least 1 number
+        if (value.length() < 6) return false;
+        boolean number = false;
+        for (char ch : value.toCharArray())
+            if (Character.isDigit(ch)) number = true;
+        return number;
+    }
+    
+    private FacesMessage setErrorMessage(String msg) {
+        return new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null);
+    }
 }

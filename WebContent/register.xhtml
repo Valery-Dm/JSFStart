@@ -15,9 +15,9 @@
 		<legend>
 		    <strong>#{text.registerPageTitle}</strong>
 		</legend>
-		
-		<h:outputText id="outcome" class="errorMsg" rendered="true"
-			value="#{client.errorMessage}" />
+		<h:messages id="outcome" styleClass="errorMsg"/>
+            <!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
+                value="#{client.errorMessage}" /-->
 		<br />
 		<h:form>
 			<h:panelGrid>
@@ -33,7 +33,8 @@
 				<h:outputLabel for="password" value="#{text.loginpass}" />
 				<h:inputText id="password" required="true"
 					value="#{client.password}"
-					requiredMessage="#{text.loginerrmsgpass}">
+					requiredMessage="#{text.loginerrmsgpass}"
+					validator="#{client.validatePassword}">
 					<f:ajax execute="@this" event="blur" render="passmsg" />
 				</h:inputText>
 				<h:message id="passmsg" for="password" class="errorMsg" />
