@@ -1,0 +1,72 @@
+@CHARSET "UTF-8";
+
+input {
+    display: block;
+	outline: 0;
+	padding: 8px;
+	border-radius: 8px;
+	border-style: none;
+    font-size: 1.2em;
+    background-color: #c3bcbc;
+    color: black;
+}
+
+input:hover, input:active, input:focus {
+	box-shadow: 2px 2px;
+}
+
+label {
+	display: block;
+    margin-top: 15px;
+}
+
+legend {
+	font-size: 1.5em;
+	font-style: oblique;
+}
+
+fieldset {
+    width: 400px;	
+}
+
+.submit {
+	margin-top: 15px;
+    outline: 0;
+    border-radius: 8px;
+    border-style: none;
+    background-color: red;
+    color: white;
+    font-size: 1.5em;
+}
+
+.submit:hover, .submit:active, .submit:focus {
+    background-color: #c31616;
+}
+
+.errorMsg {
+	color: red;
+}
+
+.langswitch {
+	margin: 10px;
+    font-size: 0.7em;
+}	
+
+.langswitch input {
+	display: none;
+}
+
+.langswitch label {
+	display: block;
+    padding: 5px 10px;
+    border: 1px solid #bfbfbf;
+    cursor: pointer;
+}
+
+.langswitch label:hover {
+    background-color: #bfbfbf;
+}
+
+#ajaxloader {
+	display: none;
+}
