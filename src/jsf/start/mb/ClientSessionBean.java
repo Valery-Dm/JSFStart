@@ -121,6 +121,7 @@ public class ClientSessionBean implements Serializable {
     }
 
     public String login() {
+        // For testing "Please wait" message
         // try {
         // Thread.sleep(2000);
         // } catch (InterruptedException e) {
@@ -172,10 +173,9 @@ public class ClientSessionBean implements Serializable {
     private boolean isPasswordValid(String value) {
         //Password should be at least 6 characters long and should contain at least 1 number
         if (value.length() < 6) return false;
-        boolean number = false;
         for (char ch : value.toCharArray())
-            if (Character.isDigit(ch)) number = true;
-        return number;
+            if (Character.isDigit(ch)) return true;
+        return false;
     }
     
     private FacesMessage setErrorMessage(String msg) {
