@@ -50,6 +50,9 @@
 				<f:ajax execute="@form" render="outcome idmsg passmsg" />
 			</h:commandButton>
 
+            <h:outputScript library="js" name="ajaxloadindicator.js" target="head"/>
+            <ui:include src="./templates/loadIndicator.xhtml"></ui:include>
+            
 		</h:form>
 		<p>
 			#{text.registerToLoginText} <a href="index.jsf">#{text.registerToLoginLink}</a>

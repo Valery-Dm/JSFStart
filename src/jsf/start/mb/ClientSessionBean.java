@@ -130,11 +130,11 @@ public class ClientSessionBean implements Serializable {
 
     public String login() {
         // For testing "Please wait" message
-        // try {
-        // Thread.sleep(2000);
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
+         try {
+             Thread.sleep(1000);
+         } catch (InterruptedException e) {
+             e.printStackTrace();
+         }
         errorMessage = null;
         if (id != null && password != null) {
             Client client = service.findClientById(id);

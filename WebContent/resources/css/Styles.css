@@ -47,26 +47,6 @@ fieldset {
 	color: red;
 }
 
-.langswitch {
-	margin: 10px;
-    font-size: 0.7em;
-}	
-
-.langswitch input {
-	display: none;
-}
-
-.langswitch label {
-	display: block;
-    padding: 5px 10px;
-    border: 1px solid #bfbfbf;
-    cursor: pointer;
-}
-
-.langswitch label:hover {
-    background-color: #bfbfbf;
-}
-
 #ajaxloader {
 	display: none;
 }

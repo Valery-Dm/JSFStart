@@ -32,16 +32,16 @@
 				<h:message id="passmsg" for="password" styleClass="errorMsg" />
 
 			</h:panelGrid>
-
-			<h:commandButton styleClass="submit" value="#{text.submit}"
+            
+            <h:commandButton styleClass="submit" value="#{text.submit}"
 				action="#{client.login}">
 				<f:ajax execute="@form" render="outcome idmsg passmsg"
 					onevent="onAjaxLoad" />
 			</h:commandButton>
 
-			<h5 id="ajaxloader">
-				<img src="./resources/images/ajax-loader.gif" /> Please wait...
-			</h5>
+			<h:outputScript library="js" name="ajaxloadindicator.js" target="head"/>
+            <ui:include src="./templates/loadIndicator.xhtml"></ui:include>
+
 		</h:form>
 
 		<p>

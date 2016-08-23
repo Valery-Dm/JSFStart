@@ -1,5 +1,5 @@
 /**
- * Utility functions
+ * Show load indicator while Ajax results are loading
  */
 
 
