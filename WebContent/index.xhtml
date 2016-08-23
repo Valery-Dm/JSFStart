@@ -1,64 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<f:view locale="#{languages.locale}">
-	<h:head>
-		<title>#{text.loginmsg}</title>
-		<link href="./resources/css/Styles.css" rel="stylesheet" type="text/css" />
-		<script src="./resources/js/utils.js" type="text/javascript"></script>
-	</h:head>
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="./templates/template.xhtml">
 
-	<h:body>
-		<fieldset>
-			<legend>
-				<strong>#{text.loginmsg}</strong>
-			</legend>
-			<h:messages id="outcome" styleClass="errorMsg"/>
-			<!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
+	<ui:define name="title">#{text.loginmsg}</ui:define>
+	<ui:define name="content">
+		<legend>
+			<strong>#{text.loginmsg}</strong>
+		</legend>
+		<h:messages id="outcome" styleClass="errorMsg" />
+		<!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
 				value="#{client.errorMessage}" /-->
-			<br />
-			
-			<h:form>
-				<h:panelGrid styleClass="formTable">
-				
-					<h:outputLabel for="name" value="#{text.loginname}" />
-					<h:inputText id="name" required="true" value="#{client.id}"
-						requiredMessage="#{text.loginerrmsgname}" 
-						validatorMessage="#{text.loginNameValMsg}">
-					   <f:validateLength minimum="6" maximum="50"/>	
-					</h:inputText>
-					<h:message id="idmsg" for="name" styleClass="errorMsg" />
-
-					<h:outputLabel for="password" value="#{text.loginpass}" />
-					<h:inputText id="password" required="true"
-						value="#{client.password}"
-						requiredMessage="#{text.loginerrmsgpass}" />
-					<h:message id="passmsg" for="password" styleClass="errorMsg" />
-					
-				</h:panelGrid>
-
-				<h:commandButton styleClass="submit" value="#{text.submit}"
-					             action="#{client.login}">
-					<f:ajax execute="@form" render="outcome idmsg passmsg"
-						onevent="onAjaxLoad" />
-				</h:commandButton>
-				
-				<h5 id="ajaxloader">
-					<img src="./resources/images/ajax-loader.gif" /> Please wait...
-				</h5>
-			</h:form>
-			
-			<p><a href="register.jsf">#{text.loginreglink}</a></p>
-		</fieldset>
+		<br />
 
 		<h:form>
-			<h:selectOneRadio value="#{languages.language}" onclick="submit()"
-				styleClass="langswitch" immediate="true">
-				<f:selectItems value="#{languages.languages}" />
-			</h:selectOneRadio>
+			<h:panelGrid styleClass="formTable">
+
+				<h:outputLabel for="name" value="#{text.loginname}" />
+				<h:inputText id="name" required="true" value="#{client.id}"
+					requiredMessage="#{text.loginerrmsgname}"
+					validatorMessage="#{text.loginNameValMsg}">
+					<f:validateLength minimum="6" maximum="50" />
+				</h:inputText>
+				<h:message id="idmsg" for="name" styleClass="errorMsg" />
+
+				<h:outputLabel for="password" value="#{text.loginpass}" />
+				<h:inputText id="password" required="true"
+					value="#{client.password}"
+					requiredMessage="#{text.loginerrmsgpass}" />
+				<h:message id="passmsg" for="password" styleClass="errorMsg" />
+
+			</h:panelGrid>
+
+			<h:commandButton styleClass="submit" value="#{text.submit}"
+				action="#{client.login}">
+				<f:ajax execute="@form" render="outcome idmsg passmsg"
+					onevent="onAjaxLoad" />
+			</h:commandButton>
+
+			<h5 id="ajaxloader">
+				<img src="./resources/images/ajax-loader.gif" /> Please wait...
+			</h5>
 		</h:form>
-	</h:body>
-</f:view>
-</html>
+
+		<p>
+			<a href="register.jsf">#{text.loginreglink}</a>
+		</p>
+	</ui:define>
+</ui:composition>

@@ -1,22 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view locale="#{languages.locale}">
-	
-<h:head>
-	<title>#{text.registerPageTitle}</title>
-	<link href="./resources/css/Styles.css" rel="stylesheet" type="text/css" />
-</h:head>
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="./templates/template.xhtml">
 
-<h:body>
-	<fieldset>
+	<ui:define name="title">#{text.registerPageTitle}</ui:define>
+	<ui:define name="content">
 		<legend>
-		    <strong>#{text.registerPageTitle}</strong>
+			<strong>#{text.registerPageTitle}</strong>
 		</legend>
-		<h:messages id="outcome" styleClass="errorMsg"/>
-            <!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
+		<h:messages id="outcome" styleClass="errorMsg" />
+		<!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
                 value="#{client.errorMessage}" /-->
 		<br />
 		<h:form>
@@ -25,7 +19,7 @@
 				<h:inputText id="name" required="true" value="#{client.id}"
 					requiredMessage="#{text.loginerrmsgname}"
 					validatorMessage="#{text.loginNameValMsg}">
-                    <f:validateLength minimum="6" maximum="50"/> 
+					<f:validateLength minimum="6" maximum="50" />
 					<f:ajax execute="@this" event="blur" render="idmsg outcome" />
 				</h:inputText>
 				<h:message id="idmsg" for="name" class="errorMsg" />
@@ -50,23 +44,15 @@
 					<f:selectItems value="#{client.plans}" />
 				</h:selectOneRadio>
 			</h:panelGrid>
-			
+
 			<h:commandButton class="submit" value="#{text.submit}"
 				action="#{client.register}">
 				<f:ajax execute="@form" render="outcome idmsg passmsg" />
 			</h:commandButton>
-			
+
 		</h:form>
 		<p>
 			#{text.registerToLoginText} <a href="index.jsf">#{text.registerToLoginLink}</a>
 		</p>
-	</fieldset>
-	<h:form>
-		<h:selectOneRadio value="#{languages.language}" onclick="submit()"
-			styleClass="langswitch" immediate="true">
-			<f:selectItems value="#{languages.languages}" />
-		</h:selectOneRadio>
-	</h:form>
-</h:body>
-</f:view>
-</html>
+	</ui:define>
+</ui:composition>

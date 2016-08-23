@@ -3,6 +3,7 @@ package jsf.start.mb;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
@@ -39,6 +40,13 @@ public class ClientSessionBean implements Serializable {
     /* Localized resources */
     @ManagedProperty("#{languages}")
     transient private Languages msg;
+    
+    @PostConstruct
+    public void init() {
+//        System.out.println("Post construct");
+//        service.toString();
+//        msg.toString();
+    }
 
     public String getId() {
         return id;
