@@ -40,12 +40,12 @@ public class ClientSessionBean implements Serializable {
     /* Localized resources */
     @ManagedProperty("#{languages}")
     transient private Languages msg;
-    
+
     @PostConstruct
     public void init() {
-//        System.out.println("Post construct");
-//        service.toString();
-//        msg.toString();
+        // System.out.println("Post construct");
+        // service.toString();
+        // msg.toString();
     }
 
     public String getId() {
@@ -57,10 +57,6 @@ public class ClientSessionBean implements Serializable {
     }
 
     public void setId(String id) {
-        errorMessage = null;
-        // immediate ajax validation
-        if (service.findClientById(id) != null) 
-            errorMessage = getMsg().getMessage("idExist");
         this.id = id;
     }
 
@@ -130,11 +126,12 @@ public class ClientSessionBean implements Serializable {
 
     public String login() {
         // For testing "Please wait" message
-         try {
-             Thread.sleep(1000);
-         } catch (InterruptedException e) {
-             e.printStackTrace();
-         }
+        try {
+            Thread.sleep(1000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         errorMessage = null;
         if (id != null && password != null) {
             Client client = service.findClientById(id);
@@ -163,29 +160,51 @@ public class ClientSessionBean implements Serializable {
                 return HOME_PAGE;
             } else errorMessage = getMsg().getMessage("idExist");
         } else errorMessage = getMsg().getMessage("emptyInput");
-        
+
         FacesContext.getCurrentInstance().addMessage(null, setErrorMessage(errorMessage));
         return REGISTER_PAGE;
     }
 
-    public void validatePassword(FacesContext context, 
-                                 UIComponent component, 
+    public void validateId(FacesContext context, UIComponent component,
+                           Object value) throws ValidatorException {
+        errorMessage = null;
+
+        // if id is empty (i.e. null)
+        if (!(value instanceof String))
+            throwErrorMessage("loginerrmsgname");
+
+        // or has incorrect length
+        String userId = (String) value;
+        int len = userId.length();
+        if (len < 6 || len > 50)
+            throwErrorMessage("loginNameValMsg");
+
+        // or id already exists
+        if (service.findClientById(userId) != null)
+            throwErrorMessage("idExist");
+    }
+
+    public void validatePassword(FacesContext context, UIComponent component,
                                  Object value) throws ValidatorException {
         errorMessage = null;
-        if (!(value instanceof String) || !isPasswordValid((String) value)) {
-            errorMessage = getMsg().getMessage("invalidPassword");
-            throw new ValidatorException(setErrorMessage(errorMessage));
-        }
+        if (!(value instanceof String) || !isPasswordValid((String) value))
+            throwErrorMessage("invalidPassword");
     }
 
     private boolean isPasswordValid(String value) {
-        //Password should be at least 6 characters long and should contain at least 1 number
+        // Password should be at least 6 characters long and should contain at
+        // least 1 number
         if (value.length() < 6) return false;
         for (char ch : value.toCharArray())
             if (Character.isDigit(ch)) return true;
         return false;
     }
-    
+
+    private void throwErrorMessage(String msg) {
+        errorMessage = getMsg().getMessage(msg);
+        throw new ValidatorException(setErrorMessage(errorMessage));
+    }
+
     private FacesMessage setErrorMessage(String msg) {
         return new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null);
     }

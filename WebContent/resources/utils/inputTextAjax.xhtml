@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+
+<cc:interface>
+	<cc:attribute name="inputId" required="true" />
+	<cc:attribute name="value" required="true"  />
+	<cc:attribute name="labelValue" required="true" />
+	<cc:attribute name="required" required="false" default="true" />
+	<cc:attribute name="requiredMessage" required="false" 
+	              default="this field should not be empty" />
+	<cc:attribute name="ajaxEvent" required="true" />
+	<cc:attribute name="ajaxRender" required="false" />
+</cc:interface>
+
+<cc:implementation>
+	<h:outputLabel for="#{cc.attrs.inputId}" value="#{cc.attrs.labelValue}" />
+	<h:inputText id="#{cc.attrs.inputId}" 
+	             value="#{cc.attrs.value}"
+	             required="#{cc.attrs.required}" 
+		         requiredMessage="#{cc.attrs.requiredMessage}">
+		 <f:ajax execute="@this" 
+		         event="#{cc.attrs.ajaxEvent}" 
+		         render="#{cc.attrs.inputId}-msg #{cc.attrs.ajaxRender}" />
+	</h:inputText>
+	<h:message id="#{cc.attrs.inputId}-msg" for="#{cc.attrs.inputId}" styleClass="errorMsg" />
+</cc:implementation>
+
+</html>

@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
+    template="./templates/template.xhtml">
+<ui:debug hotkey="x" rendered="#{facesContext.application.projectStage == 'Development'}" />
+
+    <ui:define name="title">#{text.loginmsg}</ui:define>
+    <ui:define name="content">
+        <legend>
+            <strong>#{text.loginmsg}</strong>
+        </legend>
+        <h:messages id="outcome" styleClass="errorMsg" />
+        <br />
+
+        <h:form>
+
+            <utils:inputTextAjax inputId="name" 
+                                 value="#{clientSession.id}"
+                                 labelValue="#{text.loginname}"
+                                 requiredMessage="#{text.loginerrmsgname}"
+                                 ajaxEvent="blur" />
+
+            <utils:inputTextAjax inputId="password"
+                                 value="#{clientSession.password}"
+                                 labelValue="#{text.loginpass}"
+                                 requiredMessage="#{text.loginerrmsgpass}"
+                                 ajaxEvent="blur" />
+
+
+            <h:commandButton styleClass="submit" value="#{text.submit}"
+                action="#{client.login}">
+                <f:ajax execute="@form" render="outcome name-msg pass-msg"
+                    onevent="onAjaxLoad" />
+            </h:commandButton>
+
+            <h:outputScript library="js" 
+                            name="ajaxloadindicator.js"
+                            target="head" />
+            <ui:include src="./templates/loadIndicator.xhtml" />
+
+        </h:form>
+
+        <p>
+            <a href="register.jsf">#{text.loginreglink}</a>
+        </p>
+    </ui:define>
+</ui:composition>

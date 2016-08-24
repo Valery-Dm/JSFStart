@@ -18,8 +18,7 @@
 				<h:outputLabel for="name" value="#{text.loginname}" />
 				<h:inputText id="name" required="true" value="#{client.id}"
 					requiredMessage="#{text.loginerrmsgname}"
-					validatorMessage="#{text.loginNameValMsg}">
-					<f:validateLength minimum="6" maximum="50" />
+					validator="#{client.validateId}">
 					<f:ajax execute="@this" event="blur" render="idmsg outcome" />
 				</h:inputText>
 				<h:message id="idmsg" for="name" class="errorMsg" />
