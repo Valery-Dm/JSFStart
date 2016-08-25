@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
+import jsf.start.model.Client;
 import jsf.start.model.ClientLookupService;
-import jsf.start.model.impl.Client;
 
 @ManagedBean(eager=true)
 @ApplicationScoped

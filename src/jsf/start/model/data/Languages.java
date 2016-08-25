@@ -54,7 +54,7 @@ public class Languages implements Serializable {
         return LANGUAGE_MAP;
     }
     
-    public String getMessage(String name) {
+    public String getLocalized(String name) {
         return text.getString(name);
     }
 

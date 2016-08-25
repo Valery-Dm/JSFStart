@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+
+<!-- This component is not about to be used in several places,
+     I'm just testing different approach here -->
+<cc:interface>
+    <cc:attribute name="client" required="true"
+                  type="jsf.start.mb.ClientSession" />
+</cc:interface>
+
+<cc:implementation>
+    <h:outputLabel for="name" value="#{text.loginname}" />
+    <h:inputText id="name" 
+                 required="true" 
+                 value="#{cc.attrs.client.id}"
+                 requiredMessage="#{text.loginerrmsgname}"
+                 validator="#{cc.attrs.client.validateId}">
+         <f:ajax execute="name" 
+                 event="blur" 
+                 render="namemsg outcome" />
+    </h:inputText>
+    <h:message id="namemsg" for="name" class="errorMsg" />
+
+    <h:outputLabel for="password" value="#{text.loginpass}" />
+    <h:inputText id="password" 
+                 required="true"
+                 value="#{cc.attrs.client.password}"
+                 requiredMessage="#{text.loginerrmsgpass}"
+                 validator="#{cc.attrs.client.validatePassword}">
+         <f:ajax execute="password" 
+                 event="blur" 
+                 render="passmsg outcome" />
+    </h:inputText>
+    <h:message id="passmsg" for="password" class="errorMsg" />
+
+    <h:outputLabel for="firstname" value="#{text.registerFirstName}" />
+    <h:inputText id="firstname" value="#{cc.attrs.client.firstName}" />
+
+    <h:outputLabel for="lastname" value="#{text.registerLastName}" />
+    <h:inputText id="lastname" value="#{cc.attrs.client.lastName}" />
+
+    <h:outputLabel for="plan">#{text.registerPlans}</h:outputLabel>
+    <h:selectOneRadio id="plan" value="#{cc.attrs.client.plan}">
+        <f:selectItems value="#{cc.attrs.client.plans}" />
+    </h:selectOneRadio>
+</cc:implementation>
+
+</html>

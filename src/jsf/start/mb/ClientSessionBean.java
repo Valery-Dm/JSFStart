@@ -10,11 +10,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
-import jsf.start.model.ClientLookupService;
+import jsf.start.model.*;
 import jsf.start.model.data.Languages;
 import jsf.start.model.data.Plans;
-import jsf.start.model.impl.Client;
-import jsf.start.model.impl.Plan;
 
 @ManagedBean(name = "client")
 @SessionScoped
@@ -141,8 +139,8 @@ public class ClientSessionBean implements Serializable {
                 plan = client.getPlan().getPlanName();
                 deposit = client.getDeposit().toPlainString();
                 return HOME_PAGE;
-            } else errorMessage = getMsg().getMessage("cantLogin");
-        } else errorMessage = getMsg().getMessage("emptyInput");
+            } else errorMessage = getMsg().getLocalized("cantLogin");
+        } else errorMessage = getMsg().getLocalized("emptyInput");
 
         FacesContext.getCurrentInstance().addMessage(null, setErrorMessage(errorMessage));
         return INDEX_PAGE;
@@ -158,8 +156,8 @@ public class ClientSessionBean implements Serializable {
                 deposit = client.getDeposit().toPlainString();
                 service.createNewClient(client);
                 return HOME_PAGE;
-            } else errorMessage = getMsg().getMessage("idExist");
-        } else errorMessage = getMsg().getMessage("emptyInput");
+            } else errorMessage = getMsg().getLocalized("idExist");
+        } else errorMessage = getMsg().getLocalized("emptyInput");
 
         FacesContext.getCurrentInstance().addMessage(null, setErrorMessage(errorMessage));
         return REGISTER_PAGE;
@@ -201,7 +199,7 @@ public class ClientSessionBean implements Serializable {
     }
 
     private void throwErrorMessage(String msg) {
-        errorMessage = getMsg().getMessage(msg);
+        errorMessage = getMsg().getLocalized(msg);
         throw new ValidatorException(setErrorMessage(errorMessage));
     }
 

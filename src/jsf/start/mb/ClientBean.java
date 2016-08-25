@@ -1,12 +1,9 @@
 package jsf.start.mb;
 
-import static jsf.start.model.data.Pages.HOME_PAGE;
-import static jsf.start.model.data.Pages.INDEX_PAGE;
+import static jsf.start.model.data.Pages.*;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -14,38 +11,60 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
+/* All boilerplate code is abstracted away, so just business logic is in here */
 @ManagedBean(name="clientSession")
 @SessionScoped
 public class ClientBean extends ClientSession {
 
     private static final long serialVersionUID = 2L;
-    
-    // It's not thread safe - so instance-per-session chosen
-    transient private MessageDigest md;
+
 
     @Override
     public String login() {
         assert ajaxLoaderIsShown();
-        setErrorMessage(null);
-        
-        if (getId() != null || getPassword() != null) {
+
+        if (getId() != null && getPassword() != null) {
             try {
-                if (isPasswordCorrect(hashPassword(getPassword()))) return HOME_PAGE;
-                else setErrorMessage(getLanguages().getMessage("cantLogin"));
+                if (isLoggedIn()) return HOME_PAGE;
+                else setFacesMessage("cantLogin");
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                setErrorMessage(getLanguages().getMessage("cantLogin"));
+                setFacesMessage("cantLogin");
                 e.printStackTrace();
             }
-        } 
+        }
         // Not likely to be thrown (fields are required), added for consistency
-        else setErrorMessage(getLanguages().getMessage("emptyInput"));
+        else setFacesMessage("emptyInput");
 
-        setFacesMessage();
         return INDEX_PAGE;
     }
 
     @Override
-    public void validateIdLength(FacesContext context, UIComponent component,
+    public String logout() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return INDEX_REDIRECT;
+    }
+
+    @Override
+    public String register() {
+        assert ajaxLoaderIsShown();
+
+        if (getId() != null && getPassword() != null) {
+            if (getClient() == null) {
+                // DB exception may be thrown here, so in catch section
+                // "Can't register now" message may be issued.
+                // But I'm not using real DB here so it's skipped.
+                addNewClient();
+                return HOME_PAGE;
+            } else setFacesMessage("idExist");
+        }
+        // Not likely to be thrown (fields are required), added for consistency
+        else setFacesMessage("emptyInput");
+
+        return REGISTER_PAGE;
+    }
+
+    @Override
+    public void validateId(FacesContext context, UIComponent component,
                                  Object value) throws ValidatorException {
         // if id is empty (i.e. null)
         if (!(value instanceof String))
@@ -54,35 +73,22 @@ public class ClientBean extends ClientSession {
         // or has incorrect length
         String userId = (String) value;
         if (userId.length() < minNameLength || userId.length() > maxNameLength)
-            throwErrorMessage("loginNameValMsg");
-        
-        //setErrorMessage(null);
+            throwErrorMessage("loginNameValMsgParam", minNameLength, maxNameLength);
+
+        // if provided userId is already registered
+        if (getClient(userId) != null)
+            throwErrorMessage("idExist");
     }
 
     @Override
     public void validatePassword(FacesContext context, UIComponent component,
                                  Object value) throws ValidatorException {
         if (!(value instanceof String) || !isPasswordValid((String) value))
-            throwErrorMessage("invalidPassword");
-        //setErrorMessage(null);
-    }
-    
-    private boolean ajaxLoaderIsShown() {
-        // "Please wait" message tester, it
-        // pauses page loading for visual control
-        try { Thread.sleep(2000); } 
-        catch (InterruptedException e) { e.printStackTrace(); }
-        return true;
-    }
-
-    private String hashPassword(String password) 
-            throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        if (md == null) md = MessageDigest.getInstance("MD5");
-        return Base64.getEncoder().encodeToString(md.digest(password.getBytes("UTF-8")));
+            throwErrorMessage("invalidPassword", minPassLength);
     }
 
     private boolean isPasswordValid(String value) {
-        // Password should be at least 6 characters long 
+        // Password should be at least 6 characters long
         // and should contain at least 1 number
         if (value.length() < minPassLength) return false;
         for (char ch : value.toCharArray())
@@ -90,4 +96,11 @@ public class ClientBean extends ClientSession {
         return false;
     }
 
+    private boolean ajaxLoaderIsShown() {
+        // "Please wait" message tester, it
+        // pauses page loading for visual control
+        try { Thread.sleep(2000); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        return true;
+    }
 }

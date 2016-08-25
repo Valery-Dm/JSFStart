@@ -1,4 +1,4 @@
-package jsf.start.model.impl;
+package jsf.start.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

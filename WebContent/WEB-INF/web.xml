@@ -6,16 +6,22 @@
 	id="WebApp_ID" version="3.1">
 	<display-name>JSFStart</display-name>
 	<welcome-file-list>
+		<welcome-file>index-cc.jsf</welcome-file>
 		<welcome-file>index.jsf</welcome-file>
 	</welcome-file-list>
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/expired.xhtml</location>
+	</error-page>
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
 	<context-param>
-	   <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-	   <param-value>client</param-value>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
 	</context-param>
+
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>

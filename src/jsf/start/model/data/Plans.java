@@ -6,7 +6,7 @@ import java.util.*;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import jsf.start.model.impl.Plan;
+import jsf.start.model.Plan;
 
 @ManagedBean(eager=true)
 @ApplicationScoped

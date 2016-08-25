@@ -21,15 +21,13 @@
                                  inputId="name" 
                                  value="#{clientSession.id}"
                                  labelValue="#{text.loginname}"
-                                 requiredMessage="#{text.loginerrmsgname}"
-                                 ajaxEvent="blur" />
+                                 requiredMessage="#{text.loginerrmsgname}" />
 
             <utils:inputTextAjax id="passInput"
                                  inputId="password" 
                                  value="#{clientSession.password}"
                                  labelValue="#{text.loginpass}"
-                                 requiredMessage="#{text.loginerrmsgpass}"
-                                 ajaxEvent="blur" />
+                                 requiredMessage="#{text.loginerrmsgpass}" />
 
 
             <h:commandButton id="submitButton" 
@@ -39,7 +37,7 @@
                 <f:ajax execute="@form" 
                         render="outcome 
                                 loginForm:nameInput:name-msg 
-                                loginForm:passInput:pass-msg"
+                                loginForm:passInput:password-msg"
                         onevent="onAjaxLoad" />
             </h:commandButton>
 
@@ -51,7 +49,7 @@
         </h:form>
 
         <p>
-            <a href="register.jsf">#{text.loginreglink}</a>
+            <a href="register-cc.jsf">#{text.loginreglink}</a>
         </p>
     </ui:define>
 </ui:composition>
