@@ -4,7 +4,8 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
     template="./templates/template.xhtml">
-<ui:debug hotkey="x" rendered="#{facesContext.application.projectStage == 'Development'}" />
+<ui:debug hotkey="x" 
+          rendered="#{facesContext.application.projectStage == 'Development'}" />
 
     <ui:define name="title">#{text.loginmsg}</ui:define>
     <ui:define name="content">
@@ -14,25 +15,32 @@
         <h:messages id="outcome" styleClass="errorMsg" />
         <br />
 
-        <h:form>
+        <h:form id="loginForm" >
 
-            <utils:inputTextAjax inputId="name" 
+            <utils:inputTextAjax id="nameInput"
+                                 inputId="name" 
                                  value="#{clientSession.id}"
                                  labelValue="#{text.loginname}"
                                  requiredMessage="#{text.loginerrmsgname}"
                                  ajaxEvent="blur" />
 
-            <utils:inputTextAjax inputId="password"
+            <utils:inputTextAjax id="passInput"
+                                 inputId="password" 
                                  value="#{clientSession.password}"
                                  labelValue="#{text.loginpass}"
                                  requiredMessage="#{text.loginerrmsgpass}"
                                  ajaxEvent="blur" />
 
 
-            <h:commandButton styleClass="submit" value="#{text.submit}"
-                action="#{client.login}">
-                <f:ajax execute="@form" render="outcome name-msg pass-msg"
-                    onevent="onAjaxLoad" />
+            <h:commandButton id="submitButton" 
+                             styleClass="submit" 
+                             value="#{text.submit}"
+                             action="#{clientSession.login}">
+                <f:ajax execute="@form" 
+                        render="outcome 
+                                loginForm:nameInput:name-msg 
+                                loginForm:passInput:pass-msg"
+                        onevent="onAjaxLoad" />
             </h:commandButton>
 
             <h:outputScript library="js" 

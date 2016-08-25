@@ -1,8 +1,10 @@
 package jsf.start.model.data;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,12 +29,11 @@ public class VirtualDataBase implements ClientLookupService, Serializable {
         clients.put("freddy@someothermail.com", cl2);
         // with hashed password
         MessageDigest md = null;
-        String pw3 = "";
+        String pw3 = "ax1234";
         try {
             md = MessageDigest.getInstance("MD5");
-            pw3 = md.digest("ax1234".getBytes()).toString();
-        }
-        catch (NoSuchAlgorithmException e) {
+            pw3 = Base64.getEncoder().encodeToString(md.digest(pw3.getBytes("UTF-8")));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         Client cl3 = new Client("pall@some", pw3, "Pall", "", Plans.PLAN1000);

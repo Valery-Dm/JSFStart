@@ -102,7 +102,7 @@ public abstract class ClientSession implements Serializable {
             // so it's just eases debugging for me
             if (service == null)
                 throw new IllegalComponentStateException(
-                        "ClientLookupService was not injected in Client Bean");
+                        "ClientLookupService was not injected into Client Bean");
             // could be null if client doesn't exist
             else client = service.findClientById(id);
         }
@@ -118,7 +118,7 @@ public abstract class ClientSession implements Serializable {
     protected void throwErrorMessage(String msg) {
         if (languages == null)
             throw new IllegalComponentStateException(
-                    "Languages library was not injected in Client Bean");
+                    "Languages library was not injected into Client Bean");
         errorMessage = languages.getMessage(msg);
         throw new ValidatorException(getFacesMessage(errorMessage));
     }

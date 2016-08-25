@@ -6,6 +6,7 @@ import static jsf.start.model.data.Pages.INDEX_PAGE;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -20,14 +21,14 @@ public class ClientBean extends ClientSession {
     private static final long serialVersionUID = 2L;
     
     // It's not thread safe - so instance-per-session chosen
-    private MessageDigest md;
+    transient private MessageDigest md;
 
     @Override
     public String login() {
         assert ajaxLoaderIsShown();
         setErrorMessage(null);
         
-        if (getId() != null && getPassword() != null) {
+        if (getId() != null || getPassword() != null) {
             try {
                 if (isPasswordCorrect(hashPassword(getPassword()))) return HOME_PAGE;
                 else setErrorMessage(getLanguages().getMessage("cantLogin"));
@@ -52,8 +53,7 @@ public class ClientBean extends ClientSession {
 
         // or has incorrect length
         String userId = (String) value;
-        int len = userId.length();
-        if (len < minNameLength || len > maxNameLength)
+        if (userId.length() < minNameLength || userId.length() > maxNameLength)
             throwErrorMessage("loginNameValMsg");
         
         //setErrorMessage(null);
@@ -78,7 +78,7 @@ public class ClientBean extends ClientSession {
     private String hashPassword(String password) 
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         if (md == null) md = MessageDigest.getInstance("MD5");
-        return new String(md.digest(password.getBytes("UTF-8")));
+        return Base64.getEncoder().encodeToString(md.digest(password.getBytes("UTF-8")));
     }
 
     private boolean isPasswordValid(String value) {
