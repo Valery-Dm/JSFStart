@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+
+<cc:interface componentType="jsf.start.mb.DueDate">
+    <cc:attribute name="value" type="java.util.Date" />
+</cc:interface>
+
+<cc:implementation>
+        <h:selectOneMenu id="day" converter="javax.faces.Integer">
+            <f:selectItems value="#{cc.days}" />
+        </h:selectOneMenu>
+
+        <h:selectOneMenu id="month" converter="javax.faces.Integer">
+            <f:selectItems value="#{cc.months}" />
+            <f:ajax render="day" execute="@all" />
+        </h:selectOneMenu>
+
+        <h:selectOneMenu id="year" converter="javax.faces.Integer">
+            <f:selectItems value="#{cc.years}" />
+            <f:ajax render="day" execute="@all" />
+        </h:selectOneMenu>
+</cc:implementation>
+
+</html>

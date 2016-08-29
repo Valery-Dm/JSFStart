@@ -2,18 +2,25 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
     template="./templates/template.xhtml">
 
     <ui:define name="title">#{text.hometitle}</ui:define>
     <ui:define name="content">
-        <h:form>
-            <h:commandLink value="Logout"
+        <h:form id="logout">
+            <h:commandLink value="#{text.logout}"
                 action="#{clientSession.logout}" />
         </h:form>
+
         <h1>#{text.homemsg} #{not empty clientSession.firstName ?
             clientSession.firstName : clientSession.id}</h1>
         <h:outputFormat value="#{text.homemoney}">
             <f:param value="#{clientSession.deposit}" />
         </h:outputFormat>
+
+        <h4>#{text.dateChooser}</h4>
+        <h:form id="dateChooser">
+            <utils:dueDateChooser value="#{clientSession.dueDate}" />
+        </h:form>
     </ui:define>
 </ui:composition>

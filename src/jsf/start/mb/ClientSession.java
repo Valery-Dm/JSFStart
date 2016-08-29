@@ -5,8 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.Base64;
-import java.util.Set;
+import java.util.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -34,6 +33,8 @@ public abstract class ClientSession implements Serializable {
     private String plan;
     transient private String password;
     transient private Client client;
+
+    private Date dueDate;
 
     /* HashMap instead of database of clients */
     @ManagedProperty("#{virtualDataBase}")
@@ -120,8 +121,8 @@ public abstract class ClientSession implements Serializable {
 
     protected Client getClient(String id) {
         if (client == null) {
-            // that's unexpected behavior (but it's pretty common in Eclipse)
-            // so it's just eases debugging for me
+            // that's unexpected behavior (but it's pretty common in Eclipse),
+            // right message just eases debugging for me
             if (service == null)
                 throw new ManagedBeanCreationException(
                         "ClientLookupService was not injected into Client Bean");
@@ -129,6 +130,14 @@ public abstract class ClientSession implements Serializable {
             else client = service.findClientById(id);
         }
         return client;
+    }
+
+    public Date getDueDate() {
+        return dueDate != null ? dueDate : new Date();
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
     protected void addNewClient() {
