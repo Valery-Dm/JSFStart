@@ -3,8 +3,7 @@ package jsf.start.model.data;
 import java.io.Serializable;
 import java.util.*;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.faces.bean.*;
 
 import jsf.start.model.Plan;
 
@@ -18,21 +17,25 @@ public class Plans implements Serializable {
     public static final Plan PLAN5000 = new Plan("Plan 5000", 5000);
     public static final Plan PLAN10000 = new Plan("Plan 10000", 10000);
     private static Map<String, Plan> plans;
-    
+
     static {
         plans = new LinkedHashMap<>();
         plans.put(PLAN500.getPlanName(), PLAN500);
         plans.put(PLAN1000.getPlanName(), PLAN1000);
         plans.put(PLAN5000.getPlanName(), PLAN5000);
         plans.put(PLAN10000.getPlanName(), PLAN10000);
-                        
+
     }
-    
+
     public static Map<String, Plan> getPlans() {
         return plans;
     }
-    
+
     public static Plan findPlanByName(String name) {
         return plans.get(name);
+    }
+
+    public static Plan getDefault() {
+        return PLAN500;
     }
 }

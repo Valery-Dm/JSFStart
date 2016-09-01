@@ -4,8 +4,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 
 import java.io.UnsupportedEncodingException;
-import java.security.*;
-import java.util.*;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.concurrent.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -24,14 +25,15 @@ public abstract class BaseTestClient {
     protected String testPassword = "test1234";
     protected String firstName = "User";
     protected String lastName = "Test";
-    protected String plan = Plans.PLAN1000.getPlanName();
-    protected String deposit = Plans.PLAN1000.getInitialDeposit().toString();
+    protected Plan   planObj = Plans.PLAN1000;
+    protected String plan = planObj.getPlanName();
+    protected String deposit = planObj.getInitialDeposit().toString();
     protected Date dueDate = new Date();
 
     protected ArgumentCaptor<FacesMessage> facesMessageCaptor;
 
     @Spy
-    protected FacesContext context = FacesContext.getCurrentInstance();
+    protected FacesContext context;
 
     @Spy
     protected ClientLookupService service = new TestDataBase();
@@ -68,32 +70,30 @@ public abstract class BaseTestClient {
 
     private class TestDataBase implements ClientLookupService {
 
-        Map<String, Client> clients;
+        ConcurrentMap<String, Client> clients;
 
         TestDataBase() {
-            clients = new HashMap<>();
+            clients = new ConcurrentHashMap<>();
             String hashedPassword = null;
             try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                hashedPassword = Base64.getEncoder()
-                        .encodeToString(md.digest(testPassword.getBytes("UTF-8")));
+                ClientBean cb = new ClientBean();
+                hashedPassword = cb.hashPassword(testPassword);
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 e.printStackTrace();
+                assert false : "Password hashing problems";
             }
-            client = new Client(testId, hashedPassword, firstName, lastName, Plans.PLAN1000);
+            client = new Client(testId, hashedPassword, firstName, lastName, planObj);
             clients.put(testId, client);
         }
 
         @Override
         public Client findClientById(String id) {
-            if (id == null) return null;
-            return clients.get(id.trim());
+            return clients.get(id);
         }
 
         @Override
         public void createNewClient(Client client) {
-            if (client != null)
-                clients.put(client.getId(), client);
+            clients.putIfAbsent(client.getId(), client);
         }
 
     }

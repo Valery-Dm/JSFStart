@@ -39,6 +39,7 @@ public class ClientBeanTest extends BaseTestClient {
     @Before
     public void setUp() throws Exception {
         client = service.findClientById(testId);
+        context = clientBean.getContext();
         facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
     }
 
@@ -55,7 +56,6 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword);
         assertThat(clientBean.login(), is(HOME_PAGE));
         assertThat(clientBean.getFirstName(), is(firstName));
-
     }
 
     @Test
@@ -224,7 +224,7 @@ public class ClientBeanTest extends BaseTestClient {
     @Test
     public void testPlan() {
         // default value - Plan 500
-        assertThat(clientBean.getPlan(), is(Plans.PLAN500.getPlanName()));
+        assertThat(clientBean.getPlan(), is(Plans.getDefault().getPlanName()));
         // setPlan() set just String planName, to get actual plan
         // other than default new Client should be registered
         clientBean.setId(testId + "other");

@@ -42,7 +42,6 @@ public abstract class ClientSession implements Serializable {
     @ManagedProperty("#{languages}")
     transient private Languages languages;
     /* Current context */
-    @ManagedProperty("#{facesContext}")
     transient private FacesContext context;
 
     // Object for password hashing.
@@ -79,6 +78,8 @@ public abstract class ClientSession implements Serializable {
     }
 
     public FacesContext getContext() {
+        if (context == null)
+            context = FacesContext.getCurrentInstance();
         return context;
     }
 
@@ -105,7 +106,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public String getPlan() {
-        return client == null ? Plans.PLAN500.getPlanName() :
+        return client == null ? Plans.getDefault().getPlanName() :
                client.getPlan().getPlanName();
     }
 
@@ -181,7 +182,7 @@ public abstract class ClientSession implements Serializable {
         return true;
     }
 
-    private String hashPassword(String password)
+    public String hashPassword(String password)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         if (md == null) md = MessageDigest.getInstance(hashLibrary);
         return Base64.getEncoder().encodeToString(md.digest(password.getBytes(wordEncoding)));
