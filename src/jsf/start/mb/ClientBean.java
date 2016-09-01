@@ -5,8 +5,7 @@ import static jsf.start.model.data.Pages.*;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
@@ -40,7 +39,8 @@ public class ClientBean extends ClientSession {
 
     @Override
     public String logout() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+//        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        getContext().getExternalContext().invalidateSession();
         return INDEX_REDIRECT;
     }
 
@@ -65,13 +65,13 @@ public class ClientBean extends ClientSession {
 
     @Override
     public void validateId(FacesContext context, UIComponent component,
-                                 Object value) throws ValidatorException {
+                           Object value) throws ValidatorException {
         // if id is empty (i.e. null)
         if (!(value instanceof String))
             throwErrorMessage("loginerrmsgname");
 
         // or has incorrect length
-        String userId = (String) value;
+        String userId = ((String) value).trim();
         if (userId.length() < minNameLength || userId.length() > maxNameLength)
             throwErrorMessage("loginNameValMsgParam", minNameLength, maxNameLength);
 
@@ -99,7 +99,7 @@ public class ClientBean extends ClientSession {
     private boolean ajaxLoaderIsShown() {
         // "Please wait" message tester, it
         // pauses page loading for visual control
-        try { Thread.sleep(2000); }
+        try { Thread.sleep(20); }
         catch (InterruptedException e) { e.printStackTrace(); }
         return true;
     }

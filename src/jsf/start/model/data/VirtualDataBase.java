@@ -1,31 +1,28 @@
 package jsf.start.model.data;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.*;
+import java.security.*;
 import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.faces.bean.*;
 
-import jsf.start.model.Client;
-import jsf.start.model.ClientLookupService;
+import jsf.start.model.*;
 
 @ManagedBean(eager=true)
 @ApplicationScoped
 public class VirtualDataBase implements ClientLookupService, Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    private static Map<String, Client> clients;
-    
+    private static ConcurrentMap<String, Client> clients;
+
     static {
         clients = new ConcurrentHashMap<>();
-        Client cl1 = new Client("harry@somemail.com", "ax1234", "Harry", "Rosewell", Plans.PLAN1000);
+        Client cl1 = new Client("harry@somemail.com", "ax1234",
+                                "Harry", "Rosewell", Plans.PLAN1000);
         clients.put("harry@somemail.com", cl1);
-        Client cl2 = new Client("freddy@someothermail.com", "4321xa", "Freddy", "Bears", Plans.PLAN5000);
+        Client cl2 = new Client("freddy@someothermail.com", "4321xa",
+                                "Freddy", "Bears", Plans.PLAN5000);
         clients.put("freddy@someothermail.com", cl2);
         // with hashed password
         MessageDigest md = null;
@@ -42,14 +39,12 @@ public class VirtualDataBase implements ClientLookupService, Serializable {
 
     @Override
     public Client findClientById(String id) {
-        if (id == null) return null;
-        return clients.get(id.trim());
+        return clients.get(id);
     }
 
     @Override
     public void createNewClient(Client client) {
-        if (client != null)
-            clients.put(client.getId(), client);
+        clients.putIfAbsent(client.getId(), client);
     }
 
 }

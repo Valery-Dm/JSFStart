@@ -1,9 +1,9 @@
 package jsf.start.mb;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import static jsf.start.model.data.ColorSchemas.*;
+
+import java.io.*;
+import java.security.*;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -16,16 +16,15 @@ import javax.faces.validator.ValidatorException;
 import com.sun.faces.mgbean.ManagedBeanCreationException;
 
 import jsf.start.model.*;
-import jsf.start.model.data.Languages;
-import jsf.start.model.data.Plans;
+import jsf.start.model.data.*;
 
 /* Abstracted client's login and register info */
 public abstract class ClientSession implements Serializable {
 
     private static final long serialVersionUID = 2L;
-    protected static final byte minNameLength = 6;
-    protected static final byte maxNameLength = 50;
-    protected static final byte minPassLength = 6;
+    public static final byte minNameLength = 6;
+    public static final byte maxNameLength = 50;
+    public static final byte minPassLength = 6;
 
     private String id;
     private String firstName;
@@ -42,6 +41,9 @@ public abstract class ClientSession implements Serializable {
     /* Localized resources */
     @ManagedProperty("#{languages}")
     transient private Languages languages;
+    /* Current context */
+    @ManagedProperty("#{facesContext}")
+    transient private FacesContext context;
 
     // Object for password hashing.
     // It's not thread safe - so instance-per-session chosen
@@ -56,7 +58,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        if (id != null) this.id = id.trim();
     }
 
     public String getPassword() {
@@ -64,6 +66,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public void setPassword(String password) {
+        // spaces are allowed
         this.password = password;
     }
 
@@ -75,13 +78,21 @@ public abstract class ClientSession implements Serializable {
         this.languages = languages;
     }
 
+    public FacesContext getContext() {
+        return context;
+    }
+
+    public void setContext(FacesContext context) {
+        this.context = context;
+    }
+
     public String getFirstName() {
         return client == null ? firstName :
                client.getFirstname();
     }
 
     public void setFirstName(String fname) {
-        firstName = fname;
+        if (fname != null) firstName = fname.trim();
     }
 
     public String getLastName() {
@@ -90,7 +101,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public void setLastName(String lname) {
-        lastName = lname;
+        if (lname != null) lastName = lname.trim();
     }
 
     public String getPlan() {
@@ -103,7 +114,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public void setPlan(String plan) {
-        this.plan = plan;
+        if (plan != null) this.plan = plan.trim();
     }
 
     public String getDeposit() {
@@ -119,7 +130,7 @@ public abstract class ClientSession implements Serializable {
         return getClient(id);
     }
 
-    protected Client getClient(String id) {
+    protected Client getClient(String userId) {
         if (client == null) {
             // that's unexpected behavior (but it's pretty common in Eclipse),
             // right message just eases debugging for me
@@ -127,7 +138,7 @@ public abstract class ClientSession implements Serializable {
                 throw new ManagedBeanCreationException(
                         "ClientLookupService was not injected into Client Bean");
             // could be null if client doesn't exist
-            else client = service.findClientById(id);
+            return service.findClientById(userId);
         }
         return client;
     }
@@ -140,6 +151,20 @@ public abstract class ClientSession implements Serializable {
         this.dueDate = dueDate;
     }
 
+    public String getColorSchema() {
+        if (client == null)
+            return ColorSchemas.getSchema("default");
+        return client.getColorSchema();
+    }
+
+    public void setColorSchema(String colorSchema) {
+        if (colorSchema != null && client != null) {
+            colorSchema = colorSchema.trim().toLowerCase();
+            if (contains(colorSchema))
+                client.setColorSchema(getSchema(colorSchema));
+        }
+    }
+
     protected void addNewClient() {
         Plan userPlan = Plans.findPlanByName(plan);
         client = new Client(id, password, firstName, lastName, userPlan);
@@ -148,8 +173,12 @@ public abstract class ClientSession implements Serializable {
 
     protected boolean isLoggedIn()
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        return getClient() == null ? false :
-               client.getPassword().equals(hashPassword(password));
+        Client cl = getClient();
+        if (cl == null ||
+           !cl.getPassword().equals(hashPassword(password)))
+            return false;
+        client = cl;
+        return true;
     }
 
     private String hashPassword(String password)
@@ -163,18 +192,16 @@ public abstract class ClientSession implements Serializable {
             throw new ManagedBeanCreationException(
                     "Languages library was not injected into Client Bean");
 
-        String localMessage = MessageFormat.format(languages.getLocalized(message), params);
-        throw new ValidatorException(getFacesMessage(localMessage));
+        throw new ValidatorException(getFacesMessage(message, params));
     }
 
-    private FacesMessage getFacesMessage(String message) {
-        return new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null);
+    public FacesMessage getFacesMessage(String message, Object ... params) {
+        String localMessage = MessageFormat.format(languages.getLocalized(message), params);
+        return new FacesMessage(FacesMessage.SEVERITY_ERROR, localMessage, null);
     }
 
     protected void setFacesMessage(String message, Object ... params) {
-        String localMessage = MessageFormat.format(languages.getLocalized(message), params);
-        FacesContext.getCurrentInstance()
-                    .addMessage(null, getFacesMessage(localMessage));
+        getContext().addMessage(null, getFacesMessage(message, params));
     }
 
     public abstract String login();
