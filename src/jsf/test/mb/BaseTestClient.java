@@ -32,7 +32,7 @@ public abstract class BaseTestClient {
 
     protected ArgumentCaptor<FacesMessage> facesMessageCaptor;
 
-    @Spy
+    @Mock
     protected FacesContext context;
 
     @Spy
@@ -41,6 +41,7 @@ public abstract class BaseTestClient {
     @Spy
     protected Languages languages = new Languages();
 
+    @Spy
     @InjectMocks
     protected ClientBean clientBean;
 

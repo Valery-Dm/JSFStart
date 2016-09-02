@@ -41,8 +41,6 @@ public abstract class ClientSession implements Serializable {
     /* Localized resources */
     @ManagedProperty("#{languages}")
     transient private Languages languages;
-    /* Current context */
-    transient private FacesContext context;
 
     // Object for password hashing.
     // It's not thread safe - so instance-per-session chosen
@@ -78,13 +76,7 @@ public abstract class ClientSession implements Serializable {
     }
 
     public FacesContext getContext() {
-        if (context == null)
-            context = FacesContext.getCurrentInstance();
-        return context;
-    }
-
-    public void setContext(FacesContext context) {
-        this.context = context;
+        return FacesContext.getCurrentInstance();
     }
 
     public String getFirstName() {

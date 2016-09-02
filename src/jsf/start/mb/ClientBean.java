@@ -99,7 +99,7 @@ public class ClientBean extends ClientSession {
     private boolean ajaxLoaderIsShown() {
         // "Please wait" message tester, it
         // pauses page loading for visual control
-        try { Thread.sleep(2000); }
+        try { Thread.sleep(20); }
         catch (InterruptedException e) { e.printStackTrace(); }
         return true;
     }

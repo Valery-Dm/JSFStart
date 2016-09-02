@@ -38,8 +38,8 @@ public class ClientBeanTest extends BaseTestClient {
 
     @Before
     public void setUp() throws Exception {
-        client = service.findClientById(testId);
-        context = clientBean.getContext();
+//        doThrow(new RuntimeException("Gotcha")).when(clientBean).getContext();
+        doReturn(context).when(clientBean).getContext();
         facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
     }
 
