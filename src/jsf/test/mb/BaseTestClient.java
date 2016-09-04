@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.concurrent.*;
 
+import javax.enterprise.inject.Alternative;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -69,6 +70,7 @@ public abstract class BaseTestClient {
                facesMessage.getDetail().equals(localMessage);
     }
 
+    @Alternative
     private class TestDataBase implements ClientLookupService {
 
         ConcurrentMap<String, Client> clients;

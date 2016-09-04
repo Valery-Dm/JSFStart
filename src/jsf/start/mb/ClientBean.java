@@ -5,13 +5,14 @@ import static jsf.start.model.data.Pages.*;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.faces.bean.*;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
 
 /* All boilerplate code is abstracted away, so just business logic is in here */
-@ManagedBean(name="clientSession")
+@Named("clientSession")
 @SessionScoped
 public class ClientBean extends ClientSession {
 
@@ -27,7 +28,7 @@ public class ClientBean extends ClientSession {
                 if (isLoggedIn()) return HOME_PAGE;
                 else setFacesMessage("cantLogin");
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                setFacesMessage("cantLogin");
+                setFacesMessage("somethingWrong");
                 e.printStackTrace();
             }
         }
@@ -39,7 +40,6 @@ public class ClientBean extends ClientSession {
 
     @Override
     public String logout() {
-//        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         getContext().getExternalContext().invalidateSession();
         return INDEX_REDIRECT;
     }
@@ -50,11 +50,13 @@ public class ClientBean extends ClientSession {
 
         if (getId() != null && getPassword() != null) {
             if (getClient() == null) {
-                // DB exception may be thrown here, so in catch section
-                // "Can't register now" message may be issued.
-                // But I'm not using real DB here so it's skipped.
-                addNewClient();
-                return HOME_PAGE;
+                try {
+                    addNewClient();
+                    return HOME_PAGE;
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                    e.printStackTrace(); // logging is not yet implemented
+                    setFacesMessage("somethingWrong");
+                }
             } else setFacesMessage("idExist");
         }
         // Not likely to be thrown (fields are required), added for consistency

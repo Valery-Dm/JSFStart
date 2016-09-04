@@ -8,10 +8,10 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
 
 import com.sun.faces.mgbean.ManagedBeanCreationException;
 
@@ -36,10 +36,10 @@ public abstract class ClientSession implements Serializable {
     private Date dueDate;
 
     /* HashMap instead of database of clients */
-    @ManagedProperty("#{virtualDataBase}")
+    @Inject
     transient private ClientLookupService service;
     /* Localized resources */
-    @ManagedProperty("#{languages}")
+    @Inject
     transient private Languages languages;
 
     // Object for password hashing.
@@ -158,19 +158,21 @@ public abstract class ClientSession implements Serializable {
         }
     }
 
-    protected void addNewClient() {
+    protected void addNewClient()
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Plan userPlan = Plans.findPlanByName(plan);
-        client = new Client(id, password, firstName, lastName, userPlan);
+        String hashedPassword = hashPassword(password);
+        client = new Client(id, hashedPassword, firstName, lastName, userPlan);
         service.createNewClient(client);
     }
 
     protected boolean isLoggedIn()
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        Client cl = getClient();
-        if (cl == null ||
-           !cl.getPassword().equals(hashPassword(password)))
+        Client client = getClient();
+        if (client == null ||
+           !client.getPassword().equals(hashPassword(password)))
             return false;
-        client = cl;
+        this.client = client;
         return true;
     }
 
@@ -181,20 +183,19 @@ public abstract class ClientSession implements Serializable {
     }
 
     protected void throwErrorMessage(String message, Object ... params) {
-        if (languages == null)
-            throw new ManagedBeanCreationException(
-                    "Languages library was not injected into Client Bean");
-
         throw new ValidatorException(getFacesMessage(message, params));
-    }
-
-    public FacesMessage getFacesMessage(String message, Object ... params) {
-        String localMessage = MessageFormat.format(languages.getLocalized(message), params);
-        return new FacesMessage(FacesMessage.SEVERITY_ERROR, localMessage, null);
     }
 
     protected void setFacesMessage(String message, Object ... params) {
         getContext().addMessage(null, getFacesMessage(message, params));
+    }
+
+    public FacesMessage getFacesMessage(String message, Object ... params) {
+        if (languages == null)
+            throw new ManagedBeanCreationException(
+                    "Languages library was not injected into Client Bean");
+        String localMessage = MessageFormat.format(languages.getLocalized(message), params);
+        return new FacesMessage(FacesMessage.SEVERITY_ERROR, localMessage, null);
     }
 
     public abstract String login();

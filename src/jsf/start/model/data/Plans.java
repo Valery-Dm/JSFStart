@@ -3,11 +3,12 @@ package jsf.start.model.data;
 import java.io.Serializable;
 import java.util.*;
 
-import javax.faces.bean.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import jsf.start.model.Plan;
 
-@ManagedBean(eager=true)
+@Named
 @ApplicationScoped
 public class Plans implements Serializable {
 

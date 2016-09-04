@@ -5,11 +5,13 @@ import java.security.*;
 import java.util.Base64;
 import java.util.concurrent.*;
 
-import javax.faces.bean.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import jsf.start.model.*;
 
-@ManagedBean(eager=true)
+
+@Named
 @ApplicationScoped
 public class VirtualDataBase implements ClientLookupService, Serializable {
 

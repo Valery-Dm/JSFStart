@@ -3,10 +3,10 @@ package jsf.start.model.data;
 import java.io.Serializable;
 import java.util.concurrent.*;
 
-import javax.annotation.ManagedBean;
-import javax.faces.bean.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @ApplicationScoped
 public class ColorSchemas implements Serializable {
 

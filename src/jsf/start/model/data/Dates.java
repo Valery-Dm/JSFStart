@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.util.*;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-@ManagedBean(name="dates", eager=true)
+@Named
 @ApplicationScoped
 public class Dates implements Serializable {
 
