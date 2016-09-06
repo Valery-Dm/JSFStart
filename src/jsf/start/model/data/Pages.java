@@ -9,4 +9,5 @@ public class Pages {
     public static final String REGISTER_PAGE  = "register-cc";
     public static final String HOME_PAGE      = "home-cc?faces-redirect=true" +
                                                 "&amp;includeViewParams=true";
+    public static final String EXPIRED_PAGE     = "expire";
 }

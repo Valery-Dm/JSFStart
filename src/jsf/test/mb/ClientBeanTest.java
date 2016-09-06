@@ -45,7 +45,6 @@ public class ClientBeanTest extends BaseTestClient {
 
     @After
     public void tearDown() throws Exception {
-        client = null;
         clientBean = null;
         facesMessageCaptor = null;
     }
@@ -56,6 +55,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword);
         assertThat(clientBean.login(), is(HOME_PAGE));
         assertThat(clientBean.getFirstName(), is(firstName));
+        assertThat(clientBean.getId(), is(testId));
     }
 
     @Test
@@ -94,9 +94,11 @@ public class ClientBeanTest extends BaseTestClient {
     @Test
     public void testRegisterSuccess() {
         clientBean.setFirstName("OtherUser");
+        clientBean.setLastName("Other");
         clientBean.setId(testId + "other");
         clientBean.setPassword(testPassword + "other");
         assertThat(clientBean.register(), is(HOME_PAGE));
+        assertThat(clientBean.getLastName(), is("Other"));
         assertThat(service.findClientById(testId + "other").getFirstname(),
                    is("OtherUser"));
     }

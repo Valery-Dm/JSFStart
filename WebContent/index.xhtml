@@ -1,51 +1,29 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	template="./templates/template.xhtml">
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
+    template="./templates/template.xhtml">
+    <ui:debug hotkey="x"
+        rendered="#{facesContext.application.projectStage == 'Development'}" />
 
-	<ui:define name="title">#{text.loginmsg}</ui:define>
-	<ui:define name="content">
-		<legend>
-			<strong>#{text.loginmsg}</strong>
-		</legend>
-		<h:messages id="outcome" styleClass="errorMsg" />
-		<!--  h:outputText id="outcome" styleClass="errorMsg" rendered="true"
-				value="#{client.errorMessage}" /-->
-		<br />
-
-		<h:form>
-			<h:panelGrid styleClass="formTable">
-
-				<h:outputLabel for="name" value="#{text.loginname}" />
-				<h:inputText id="name" required="true" value="#{client.id}"
-					requiredMessage="#{text.loginerrmsgname}"
-					validatorMessage="#{text.loginNameValMsg}">
-					<f:validateLength minimum="6" maximum="50" />
-				</h:inputText>
-				<h:message id="idmsg" for="name" styleClass="errorMsg" />
-
-				<h:outputLabel for="password" value="#{text.loginpass}" />
-				<h:inputText id="password" required="true"
-					value="#{client.password}"
-					requiredMessage="#{text.loginerrmsgpass}" />
-				<h:message id="passmsg" for="password" styleClass="errorMsg" />
-
-			</h:panelGrid>
-            
-            <h:commandButton styleClass="submit" value="#{text.submit}"
-				action="#{client.login}">
-				<f:ajax execute="@form" render="outcome idmsg passmsg"
-					onevent="onAjaxLoad" />
-			</h:commandButton>
-
-			<h:outputScript library="js" name="ajaxloadindicator.js" target="head"/>
-            <ui:include src="./templates/loadIndicator.xhtml"></ui:include>
-
-		</h:form>
-
-		<p>
-			<a href="register.jsf">#{text.loginreglink}</a>
-		</p>
-	</ui:define>
+    <ui:define name="title">#{text.welcome}</ui:define>
+    <ui:define name="content">
+        <legend>
+            <strong>#{text.welcome}</strong>
+        </legend>
+        <h4>#{text.intro}</h4>
+        <h:form>
+            <p>
+                #{text.registerToLoginText} 
+                <h:commandLink action="index-cc"
+                    value="#{text.registerToLoginLink}" />
+            </p>
+            <p>
+                <h:commandLink action="register-cc"
+                    value="#{text.loginreglink}" />
+            </p>
+            <h:commandButton action="ClientFlow" value="Go to..." />
+        </h:form>
+    </ui:define>
 </ui:composition>

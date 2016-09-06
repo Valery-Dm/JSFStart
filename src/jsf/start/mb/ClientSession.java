@@ -119,11 +119,11 @@ public abstract class ClientSession implements Serializable {
         this.service = service;
     }
 
-    protected Client getClient() {
+    public Client getClient() {
         return getClient(id);
     }
 
-    protected Client getClient(String userId) {
+    public Client getClient(String userId) {
         if (client == null) {
             // that's unexpected behavior (but it's pretty common in Eclipse),
             // right message just eases debugging for me

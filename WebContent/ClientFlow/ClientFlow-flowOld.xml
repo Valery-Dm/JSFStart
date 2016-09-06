@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+	<flow-definition id="ClientFlow">
+		<start-node>startPage</start-node>
+		<!--  Eclipse issues error here 
+		<view id="startPage">
+			<vdl-document>/ClientFlow/ClientFlow.xhtml</vdl-document>
+		</view>
+		 -->
+		<flow-return id="expireSession">
+			<from-outcome>/expired</from-outcome>
+		</flow-return>
+	</flow-definition>
+</faces-config>

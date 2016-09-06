@@ -1,16 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<meta http-equiv="refresh" content="3;url=#{request.contextPath}/index-cc.xhtml" />
-    
-<title>Session is expired</title>
-</head>
-<body>
-    <h1>
-        The session was expired. 
-    </h1>
-    <p>You'll be redirected within 3 seconds</p>
-    <p>Or click<a href="index-cc.jsf"> go to index </a>if nothing happens</p>
-</body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
+    template="./templates/template.xhtml">
+
+    <ui:define name="metadata">
+        <meta http-equiv="refresh"
+              content="3;url=#{request.contextPath}/index.jsf" />
+    </ui:define>
+    <ui:define name="title">#{text.expired}</ui:define>
+    <ui:define name="content">
+        <h1>#{text.expired}. #{text.seeyou}</h1>
+        <h:outputFormat value="#{text.redirect}">
+            <f:param value="3" />
+        </h:outputFormat>
+
+        <h:form>
+            #{text.gotoindex1}
+            <h:commandLink action="index"
+                           value="#{text.gotoindexlink}" />
+            #{text.gotoindex2}
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -5,15 +5,15 @@ import static jsf.start.model.data.Pages.*;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.flow.FlowScoped;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 
 /* All boilerplate code is abstracted away, so just business logic is in here */
 @Named("clientSession")
-@SessionScoped
+@FlowScoped("ClientFlow")
 public class ClientBean extends ClientSession {
 
     private static final long serialVersionUID = 2L;

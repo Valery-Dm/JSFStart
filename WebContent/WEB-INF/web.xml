@@ -6,7 +6,6 @@
 	id="WebApp_ID" version="3.1">
 	<display-name>JSFStart</display-name>
 	<welcome-file-list>
-		<welcome-file>index-cc.jsf</welcome-file>
 		<welcome-file>index.jsf</welcome-file>
 	</welcome-file-list>
 	<error-page>
@@ -20,6 +19,10 @@
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.CLIENT_WINDOW_MODE</param-name>
+		<param-value>url</param-value>
 	</context-param>
 
 	<servlet>

@@ -21,6 +21,7 @@ label {
 }
 
 legend {
+	white-space: normal;
 	margin-left: 10px;
 	font-size: 1.5em;
 	font-style: oblique;

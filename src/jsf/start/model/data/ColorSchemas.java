@@ -3,11 +3,8 @@ package jsf.start.model.data;
 import java.io.Serializable;
 import java.util.concurrent.*;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
-
-@Named
-@ApplicationScoped
+//@Named
+//@ApplicationScoped
 public class ColorSchemas implements Serializable {
 
     private static final long serialVersionUID = 1L;

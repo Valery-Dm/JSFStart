@@ -21,7 +21,6 @@ import jsf.start.model.data.*;
 public abstract class BaseTestClient {
 
     // test client info
-    protected Client client;
     protected String testId = "user@test";
     protected String testPassword = "test1234";
     protected String firstName = "User";
@@ -85,7 +84,7 @@ public abstract class BaseTestClient {
                 e.printStackTrace();
                 assert false : "Password hashing problems";
             }
-            client = new Client(testId, hashedPassword, firstName, lastName, planObj);
+            Client client = new Client(testId, hashedPassword, firstName, lastName, planObj);
             clients.put(testId, client);
         }
 
