@@ -3,16 +3,14 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
-    template="./templates/template.xhtml">
+    template="../templates/template.xhtml">
     <f:metadata>
-        <f:viewParam name="client" value="#{clientSession.id}"/>
+        <f:viewParam name="client" value="#{clientSession.id}" />
     </f:metadata>
+    
     <ui:define name="title">#{text.hometitle}</ui:define>
     <ui:define name="content">
-        <h:form id="logout">
-            <h:commandLink value="#{text.logout}"
-                action="#{clientSession.logout}" />
-        </h:form>
+        <h:link value="#{text.logout}" outcome="expireSession" />
 
         <h1>#{text.homemsg} #{not empty clientSession.firstName ?
             clientSession.firstName : clientSession.id}</h1>

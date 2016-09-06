@@ -2,10 +2,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:utils="http://xmlns.jcp.org/jsf/composite/utils"
     template="./templates/template.xhtml">
-    <ui:debug hotkey="x"
-        rendered="#{facesContext.application.projectStage == 'Development'}" />
 
     <ui:define name="title">#{text.welcome}</ui:define>
     <ui:define name="content">
@@ -13,17 +10,6 @@
             <strong>#{text.welcome}</strong>
         </legend>
         <h4>#{text.intro}</h4>
-        <h:form>
-            <p>
-                #{text.registerToLoginText} 
-                <h:commandLink action="index-cc"
-                    value="#{text.registerToLoginLink}" />
-            </p>
-            <p>
-                <h:commandLink action="register-cc"
-                    value="#{text.loginreglink}" />
-            </p>
-            <h:commandButton action="ClientFlow" value="Go to..." />
-        </h:form>
+        <h:link value="#{text.registerToLoginLink}" outcome="client"/>
     </ui:define>
 </ui:composition>

@@ -13,7 +13,7 @@ import javax.inject.Named;
 
 /* All boilerplate code is abstracted away, so just business logic is in here */
 @Named("clientSession")
-@FlowScoped("ClientFlow")
+@FlowScoped("client")
 public class ClientBean extends ClientSession {
 
     private static final long serialVersionUID = 2L;

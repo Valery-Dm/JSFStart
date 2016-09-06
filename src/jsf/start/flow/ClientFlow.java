@@ -14,9 +14,9 @@ public class ClientFlow implements Serializable {
     @FlowDefinition
     public Flow defineFlow(@FlowBuilderParameter FlowBuilder flowBuilder) {
         System.out.println("============================= Flow builder is working");
-        String flowId = "ClientFlow";
+        String flowId = "client";
         flowBuilder.id("", flowId);
-        flowBuilder.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml")
+        flowBuilder.viewNode(flowId, "/" + flowId + "/index-cc.xhtml")
                    .markAsStartNode();
         flowBuilder.returnNode("expireSession").fromOutcome("/expired");
         return flowBuilder.getFlow();
