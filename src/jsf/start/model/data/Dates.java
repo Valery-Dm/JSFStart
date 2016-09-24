@@ -2,6 +2,7 @@ package jsf.start.model.data;
 
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,8 +24,9 @@ public class Dates implements Serializable {
     static {
         days = new TreeSet<>();
         for (int i = 0; i < 31;) days.add(++i);
-        int thisYear = Calendar.getInstance()
-                               .get(Calendar.YEAR);
+        int thisYear = LocalDate.now().getYear();
+//        int thisYear = Calendar.getInstance()
+//                               .get(Calendar.YEAR);
         // set 20 years from now
         years = new int[20];
         for (int i = 0; i < 20;) years[i++] = thisYear++;

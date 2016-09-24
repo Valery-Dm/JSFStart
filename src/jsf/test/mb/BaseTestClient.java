@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.concurrent.*;
 
 import javax.enterprise.inject.Alternative;
@@ -28,7 +28,7 @@ public abstract class BaseTestClient {
     protected Plan   planObj = Plans.PLAN1000;
     protected String plan = planObj.getPlanName();
     protected String deposit = planObj.getInitialDeposit().toString();
-    protected Date dueDate = new Date();
+    protected LocalDate dueDate = LocalDate.now();
 
     protected ArgumentCaptor<FacesMessage> facesMessageCaptor;
 

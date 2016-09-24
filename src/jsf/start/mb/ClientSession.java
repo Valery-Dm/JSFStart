@@ -5,6 +5,7 @@ import static jsf.start.model.data.ColorSchemas.*;
 import java.io.*;
 import java.security.*;
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.faces.application.FacesMessage;
@@ -33,7 +34,7 @@ public abstract class ClientSession implements Serializable {
     transient private String password;
     transient private Client client;
 
-    private Date dueDate;
+    private LocalDate dueDate;
 
     /* HashMap instead of database of clients */
     @Inject
@@ -136,11 +137,11 @@ public abstract class ClientSession implements Serializable {
         return client;
     }
 
-    public Date getDueDate() {
-        return dueDate != null ? dueDate : new Date();
+    public LocalDate getDueDate() {
+        return dueDate != null ? dueDate : LocalDate.now();
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 

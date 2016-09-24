@@ -1,7 +1,7 @@
 package jsf.start.mb;
 
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.faces.component.*;
@@ -15,7 +15,7 @@ public class DueDate extends UIInput implements NamingContainer, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Calendar calendar = new GregorianCalendar();
+//    private Calendar calendar = new GregorianCalendar();
 
     @Override
     protected Object getConvertedValue(FacesContext context,
@@ -29,7 +29,8 @@ public class DueDate extends UIInput implements NamingContainer, Serializable {
                  Integer.parseInt((String) monthComponent.getSubmittedValue());
         int year =
                  Integer.parseInt((String) yearComponent.getSubmittedValue());
-        return new GregorianCalendar(year, month - 1, day).getTime();
+//        return new GregorianCalendar(year, month - 1, day).getTime();
+        return LocalDate.of(year, month, day);
     }
 
     @Override
@@ -44,22 +45,33 @@ public class DueDate extends UIInput implements NamingContainer, Serializable {
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        calendar.setTime((Date) getValue());
+        LocalDate date = (LocalDate) getValue();
+//        calendar.setTime((Date) getValue());
+
         UIInput dayComponent   = (UIInput) findComponent("day");
         UIInput monthComponent = (UIInput) findComponent("month");
         UIInput yearComponent  = (UIInput) findComponent("year");
-        dayComponent.setValue(calendar.get(Calendar.DATE));
-        monthComponent.setValue(calendar.get(Calendar.MONTH) + 1);
-        yearComponent.setValue(calendar.get(Calendar.YEAR));
+
+        dayComponent.setValue(date.getDayOfMonth());
+        monthComponent.setValue(date.getMonthValue());
+        yearComponent.setValue(date.getYear());
+
+//        dayComponent.setValue(calendar.get(Calendar.DATE));
+//        monthComponent.setValue(calendar.get(Calendar.MONTH) + 1);
+//        yearComponent.setValue(calendar.get(Calendar.YEAR));
+
         super.encodeBegin(context);
     }
 
     /* Getter methods moved to component from Dates class */
 
     public Set<Integer> getDays() {
-        calendar.setTime((Date) getValue());
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year  = calendar.get(Calendar.YEAR);
+        LocalDate date = (LocalDate) getValue();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+//        calendar.setTime((Date) getValue());
+//        int month = calendar.get(Calendar.MONTH) + 1;
+//        int year  = calendar.get(Calendar.YEAR);
         int end = Dates.DAYS[month];
         if (month == 2 && Dates.getLeapYears().contains(year)) end = 29;
         return Dates.getDays().headSet(end, true);
