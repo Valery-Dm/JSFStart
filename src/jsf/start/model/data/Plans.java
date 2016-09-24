@@ -1,6 +1,5 @@
 package jsf.start.model.data;
 
-import java.io.Serializable;
 import java.util.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -10,9 +9,8 @@ import jsf.start.model.Plan;
 
 @Named
 @ApplicationScoped
-public class Plans implements Serializable {
+public class Plans {
 
-    private static final long serialVersionUID = 1L;
     public static final Plan PLAN500 = new Plan("Plan 500", 500);
     public static final Plan PLAN1000 = new Plan("Plan 1000", 1000);
     public static final Plan PLAN5000 = new Plan("Plan 5000", 5000);

@@ -1,4 +1,4 @@
-package jsf.test.mb;
+package test.start.mb;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ public abstract class BaseTestClient {
     protected ClientLookupService service = new TestDataBase();
 
     @Spy
-    protected Languages languages = new Languages();
+    protected Languages languages;
 
     @Spy
     @InjectMocks
@@ -63,7 +63,7 @@ public abstract class BaseTestClient {
               .addMessage(anyString(), facesMessageCaptor.capture());
         FacesMessage facesMessage = facesMessageCaptor.getValue();
         String localMessage = languages.getLocalized(message);
-        // As of right now I have errors only.
+        // As of right now I have error-messages only.
         // Severity may be accepted as a parameter if needed
         return facesMessage.getSeverity().equals(FacesMessage.SEVERITY_ERROR) &&
                facesMessage.getDetail().equals(localMessage);

@@ -1,13 +1,12 @@
 package jsf.start.mb;
 
-import static jsf.start.model.data.ColorSchemas.*;
-
 import java.io.*;
 import java.security.*;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.*;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -38,17 +37,22 @@ public abstract class ClientSession implements Serializable {
 
     /* HashMap instead of database of clients */
     @Inject
-    transient private ClientLookupService service;
+    private ClientLookupService service;
     /* Localized resources */
     @Inject
-    transient private Languages languages;
+    private Languages languages;
 
     // Object for password hashing.
     // It's not thread safe - so instance-per-session chosen
     transient private MessageDigest md;
     // These options are allowed to be changed from child object
-    transient protected String hashLibrary = "MD5";
-    transient protected String wordEncoding = "UTF-8";
+    protected String hashLibrary = "MD5";
+    protected String wordEncoding = "UTF-8";
+
+    @PostConstruct
+    public void init() {
+        System.out.println("========= ClientSession created =========");
+    }
 
     public String getId() {
         return client == null ? id :
@@ -66,18 +70,6 @@ public abstract class ClientSession implements Serializable {
     public void setPassword(String password) {
         // spaces are allowed
         this.password = password;
-    }
-
-    public Languages getLanguages() {
-        return languages;
-    }
-
-    public void setLanguages(Languages languages) {
-        this.languages = languages;
-    }
-
-    public FacesContext getContext() {
-        return FacesContext.getCurrentInstance();
     }
 
     public String getFirstName() {
@@ -111,6 +103,18 @@ public abstract class ClientSession implements Serializable {
         if (plan != null) this.plan = plan.trim();
     }
 
+    public Languages getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Languages languages) {
+        this.languages = languages;
+    }
+
+    public FacesContext getContext() {
+        return FacesContext.getCurrentInstance();
+    }
+
     public String getDeposit() {
         return client == null ? null :
                client.getDeposit().toPlainString();
@@ -126,8 +130,7 @@ public abstract class ClientSession implements Serializable {
 
     public Client getClient(String userId) {
         if (client == null) {
-            // that's unexpected behavior (but it's pretty common in Eclipse),
-            // right message just eases debugging for me
+            // for debugging purposes
             if (service == null)
                 throw new ManagedBeanCreationException(
                         "ClientLookupService was not injected into Client Bean");
@@ -143,20 +146,6 @@ public abstract class ClientSession implements Serializable {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
-    }
-
-    public String getColorSchema() {
-        if (client == null)
-            return ColorSchemas.getSchema("default");
-        return client.getColorSchema();
-    }
-
-    public void setColorSchema(String colorSchema) {
-        if (colorSchema != null && client != null) {
-            colorSchema = colorSchema.trim().toLowerCase();
-            if (contains(colorSchema))
-                client.setColorSchema(getSchema(colorSchema));
-        }
     }
 
     protected void addNewClient()
@@ -197,6 +186,70 @@ public abstract class ClientSession implements Serializable {
                     "Languages library was not injected into Client Bean");
         String localMessage = MessageFormat.format(languages.getLocalized(message), params);
         return new FacesMessage(FacesMessage.SEVERITY_ERROR, localMessage, null);
+    }
+
+    private void writeObject(ObjectOutputStream stream)
+                                    throws IOException {
+        stream.defaultWriteObject();
+        // password field and client object are omitted
+        // so not to expose private information
+        stream.writeBoolean(client != null);
+
+        System.out.println("============= ClientSession serialized =============");
+    }
+
+    private void readObject(ObjectInputStream stream)
+            throws ClassNotFoundException, IOException {
+        stream.defaultReadObject();
+        // I don't know how safe is this approach,
+        // I need to initialize 'client' again
+        // in order to continue server's session
+        // but I can't call login() as password is absent.
+        // So it looks fragile:
+        // what if someone could forge serialized
+        // form with client's 'id' replaced
+        if (stream.readBoolean()) client = getClient();
+
+        System.out.println("============= ClientSession restored =============");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        // using getClass method to be 'symmetric'
+        if (obj == null || obj.getClass() != getClass())
+            return false;
+        ClientSession other = (ClientSession) obj;
+        if (client != null && !client.equals(other.client))
+            return false;
+        boolean equals = false;
+        if (client == null) {
+            equals = ((id == null && other.id == null) ||
+                     (id != null && id.equals(other.id))) &&
+                     ((firstName == null && other.firstName == null) ||
+                     (firstName != null && firstName.equals(other.firstName))) &&
+                     ((lastName == null && other.lastName == null) ||
+                     (lastName != null && lastName.equals(other.lastName))) &&
+                     ((plan == null && other.plan == null) ||
+                     (plan != null && plan.equals(other.plan)));
+            if (!equals) return false;
+        }
+        equals = ((password == null && other.password == null) ||
+                 (password != null && password.equals(other.password))) &&
+                 ((dueDate == null && other.dueDate == null) ||
+                 (dueDate != null && dueDate.equals(other.dueDate))) &&
+                 service instanceof ClientLookupService &&
+                 other.service instanceof ClientLookupService &&
+                 service.getClass() == other.service.getClass() &&
+                 languages instanceof Languages &&
+                 other.languages instanceof Languages &&
+                 languages.equals(other.languages) &&
+                 hashLibrary.equals(other.hashLibrary) &&
+                 wordEncoding.equals(other.wordEncoding);
+                // Nothing to check in service.equals() so it's omitted.
+                // Since MessageDigest doesn't offer 'deep' equals method
+                // its equality check is also excluded
+        return equals;
     }
 
     public abstract String login();

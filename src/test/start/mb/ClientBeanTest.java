@@ -1,12 +1,13 @@
-package jsf.test.mb;
+package test.start.mb;
 
 import static jsf.start.model.data.Pages.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
+import java.io.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.faces.application.FacesMessage;
@@ -18,7 +19,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
-import jsf.start.mb.ClientSession;
+import jsf.start.mb.*;
 import jsf.start.model.data.*;
 
 
@@ -63,7 +64,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword);
         assertThat(clientBean.login(), is(INDEX_PAGE));
         assertThat(clientBean.getFirstName(), nullValue());
-        assertTrue(checkFacesMessage("emptyInput"));
+        assertThat(checkFacesMessage("emptyInput"), is(true));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword);
         assertThat(clientBean.login(), is(INDEX_PAGE));
         assertThat(clientBean.getFirstName(), nullValue());
-        assertTrue(checkFacesMessage("cantLogin"));
+        assertThat(checkFacesMessage("cantLogin"), is(true));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword + "wrong");
         assertThat(clientBean.login(), is(INDEX_PAGE));
         assertThat(clientBean.getFirstName(), nullValue());
-        assertTrue(checkFacesMessage("cantLogin"));
+        assertThat(checkFacesMessage("cantLogin"), is(true));
     }
 
     @Test
@@ -108,7 +109,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword);
         assertThat(clientBean.register(), is(REGISTER_PAGE));
         assertThat(clientBean.getFirstName(), nullValue());
-        assertTrue(checkFacesMessage("emptyInput"));
+        assertThat(checkFacesMessage("emptyInput"), is(true));
     }
 
     @Test
@@ -117,7 +118,7 @@ public class ClientBeanTest extends BaseTestClient {
         clientBean.setPassword(testPassword + "other");
         assertThat(clientBean.register(), is(REGISTER_PAGE));
         assertThat(clientBean.getFirstName(), nullValue());
-        assertTrue(checkFacesMessage("idExist"));
+        assertThat(checkFacesMessage("idExist"), is(true));
     }
 
     @Test
@@ -254,5 +255,64 @@ public class ClientBeanTest extends BaseTestClient {
     public void testDueDate() {
         clientBean.setDueDate(dueDate);
         assertThat(clientBean.getDueDate(), is(dueDate));
+    }
+
+    @Test
+    public void testSerializableForm() {
+        // for this test to be done we cannot use mocked object,
+        // so I'm getting the real one
+        ClientSession client = new ClientBean();
+        client.setId("pall@some");
+        client.setPassword("ax1234");
+        client.setService(new VirtualDataBase());
+        client.setLanguages(new Languages());
+        client.login();
+        // serialized form lacks password
+        client.setPassword(null);
+
+        String file = "src/test/resources/clientBean.out";
+        try (FileOutputStream out = new FileOutputStream(file);
+             ObjectOutputStream stream = new ObjectOutputStream(out)) {
+            stream.writeObject(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (FileInputStream in = new FileInputStream(file);
+             ObjectInputStream stream = new ObjectInputStream(in)) {
+            ClientSession restoredClient = (ClientSession) stream.readObject();
+            assertThat(restoredClient, is(client));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSerializableFormNullClient() {
+        // 'client' instance field will be null here,
+        // it means that client has not logged in
+        ClientSession client = new ClientBean();
+        client.setId("someId");
+        client.setDueDate(LocalDate.now());
+        client.setFirstName("someName");
+        client.setPlan(Plans.getDefault().getPlanName());
+        client.setService(new VirtualDataBase());
+        client.setLanguages(new Languages());
+
+        String file = "src/test/resources/clientBean.out";
+        try (FileOutputStream out = new FileOutputStream(file);
+             ObjectOutputStream stream = new ObjectOutputStream(out)) {
+            stream.writeObject(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (FileInputStream in = new FileInputStream(file);
+             ObjectInputStream stream = new ObjectInputStream(in)) {
+            ClientSession restoredClient = (ClientSession) stream.readObject();
+            assertThat(restoredClient, is(client));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

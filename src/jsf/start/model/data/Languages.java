@@ -1,6 +1,6 @@
 package jsf.start.model.data;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
@@ -20,8 +20,8 @@ public class Languages implements Serializable {
         LANGUAGE_MAP.put("\u0420\u0443\u0441\u0441\u043A\u0438\u0439", "ru");
     }
 
-    private Locale locale = new Locale("en");
     private String language = "en";
+    transient private Locale locale = new Locale(language);
     transient private ResourceBundle text;
 
     @PostConstruct
@@ -34,8 +34,10 @@ public class Languages implements Serializable {
     }
 
     public void setLanguage(String language) {
-        this.language = language;
-        setLocale(new Locale(language));
+        if (language != null) {
+            this.language = language;
+            setLocale(new Locale(language));
+        }
     }
 
     public Locale getLocale() {
@@ -43,8 +45,10 @@ public class Languages implements Serializable {
     }
 
     public void setLocale(Locale locale) {
-        this.locale = locale;
-        setMessages(locale);
+        if (locale != null) {
+            this.locale = locale;
+            setMessages(locale);
+        }
     }
 
     private void setMessages(Locale locale) {
@@ -59,4 +63,23 @@ public class Languages implements Serializable {
         return text.getString(name);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Languages))
+            return false;
+        Languages other = (Languages) obj;
+        // 'text' implies to be also equal (by design)
+        // if 'languages' and 'locale' are the same
+        return language.equals(other.language) &&
+               locale.equals(other.locale);
+    }
+
+    // accept default writeObject form,
+    // only need special reading
+    private void readObject(ObjectInputStream stream)
+            throws ClassNotFoundException, IOException {
+        stream.defaultReadObject();
+        setLanguage(language);
+    }
 }

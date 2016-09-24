@@ -15,6 +15,10 @@ import jsf.start.model.*;
 @ApplicationScoped
 public class VirtualDataBase implements ClientLookupService, Serializable {
 
+    /**
+     * Because of unusual nature of this class
+     * serializable form of its instances will be empty
+     */
     private static final long serialVersionUID = 1L;
     private static ConcurrentMap<String, Client> clients;
 
@@ -48,5 +52,4 @@ public class VirtualDataBase implements ClientLookupService, Serializable {
     public void createNewClient(Client client) {
         clients.putIfAbsent(client.getId(), client);
     }
-
 }

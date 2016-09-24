@@ -1,13 +1,9 @@
 package jsf.start.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-import jsf.start.model.data.ColorSchemas;
+public class Client {
 
-public class Client implements Serializable {
-
-    private static final long serialVersionUID = 1L;
     private String id;
     private String password;
     private BigDecimal deposit;
@@ -16,9 +12,10 @@ public class Client implements Serializable {
     private String lastname;
     private Plan plan;
 
-    private String colorSchema;
-
     public Client(String id, String password, String firstname, String lastname, Plan plan) {
+        if (id == null || password == null)
+            throw new IllegalArgumentException(
+                  "null id and/or password are not allowed in constructor");
         this.id = id;
         this.password = password;
         deposit = plan != null ?
@@ -26,7 +23,6 @@ public class Client implements Serializable {
         this.firstname = firstname;
         this.lastname = lastname;
         this.plan = plan;
-        setColorSchema(ColorSchemas.getSchema("default"));
     }
 
     public String getFirstname() {
@@ -53,45 +49,46 @@ public class Client implements Serializable {
         return deposit;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+//    public void setId(String id) {
+//        this.id = id;
+//    }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password != null)
+            this.password = password;
     }
 
     public void setDeposit(BigDecimal deposit) {
-        this.deposit = deposit;
+        if (deposit != null)
+            this.deposit = deposit;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        if (firstname != null)
+            this.firstname = firstname;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getColorSchema() {
-        return colorSchema;
-    }
-
-    public void setColorSchema(String colorSchema) {
-        this.colorSchema = colorSchema;
+        if (lastname != null)
+            this.lastname = lastname;
     }
 
     public void setPlan(Plan plan) {
-        this.plan = plan;
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+        if (plan != null)
+            this.plan = plan;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return id.equals(obj);
+        if (this == obj) return true;
+        if (!(obj instanceof Client))
+            return false;
+        Client other = (Client) obj;
+        return id.equals(other.id) &&
+               password.equals(other.password) &&
+               deposit.equals(other.deposit) &&
+               firstname.equals(other.firstname) &&
+               lastname.equals(other.lastname) &&
+               plan.equals(other.plan);
     }
 }
